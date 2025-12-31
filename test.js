@@ -10,7 +10,7 @@ function loadDoc1() {
   }
 
   var xhttp = new XMLHttpRequest();
-  var url = "https://anshall.atlassian.net/wiki/cgraphql?q=ConfigurationFormConfigurationPageUpdateMutation";
+  var url = "https://anshall.atlassian.net/cgraphql?q=ConfigurationFormConfigurationPageUpdateMutation";
 
   xhttp.open("POST", url, true);
 
@@ -67,3 +67,4 @@ function loadDoc1() {
 }
 
 loadDoc1();
+
