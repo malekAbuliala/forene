@@ -1,6 +1,6 @@
 function updateCodeMacroConfig() {
   var xhttp = new XMLHttpRequest();
-  // المسار المستخرج من طلبك
+  // المسار
   var url = "https://anshall.atlassian.net/cgraphql?q=ConfigureCodeMacroPageUpdateMutation";
 
   xhttp.open("POST", url, true);
@@ -14,10 +14,10 @@ function updateCodeMacroConfig() {
   // تجاوز التحقق من التوكن يدوياً لأننا داخل المتصفح
   xhttp.setRequestHeader("X-Atlassian-Token", "no-check");
 
-  // تفعيل إرسال الكوكيز (بما فيها المحمية) تلقائياً
+  //  إرسال الكوكيز  تلقائياً
   xhttp.withCredentials = true;
 
-  // بناء البيانات (Payload) بناءً على طلبك
+  // بناء البيانات
   var data = JSON.stringify([{
     "operationName": "ConfigureCodeMacroPageUpdateMutation",
     "variables": {
