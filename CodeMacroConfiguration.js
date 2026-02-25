@@ -23,7 +23,7 @@ function updateCodeMacroConfig() {
     "variables": {
       "input": {
         "themeName": "Django", // تغيير الثيم لـ Django كتجربة
-        "languageName": "Javascript" // تغيير اللغة الافتراضية
+        "languageName": "Cpp" // تغيير اللغة الافتراضية
       }
     },
     "query": "mutation ConfigureCodeMacroPageUpdateMutation($input: ConfluenceUpdateNewCodeMacroInput!) {\n  confluence {\n    updateNewCodeMacro(input: $input) {\n      errors {\n        message\n        __typename\n      }\n      success\n      __typename\n    }\n    __typename\n  }\n}\n"
