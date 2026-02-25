@@ -1,7 +1,7 @@
 function updateCodeMacroConfig() {
   var xhttp = new XMLHttpRequest();
   // المسار
-  var url = "https://anshall.atlassian.net/cgraphql?q=ConfigureCodeMacroPageUpdateMutation";
+  var url = "https://nbvc1.atlassian.net/cgraphql?q=ConfigureCodeMacroPageUpdateMutation";
 
   xhttp.open("POST", url, true);
 
