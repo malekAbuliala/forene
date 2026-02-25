@@ -22,7 +22,7 @@ function updateCodeMacroConfig() {
     "operationName": "ConfigureCodeMacroPageUpdateMutation",
     "variables": {
       "input": {
-        "themeName": "Confluence", // تغيير الثيم لـ Django كتجربة
+        "themeName": "Confluence", // Confluenceكتجربة  تغير التيم ل  
         "languageName": "Cpp" // تغيير اللغة الافتراضية
       }
     },
